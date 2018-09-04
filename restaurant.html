@@ -18,9 +18,10 @@
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
+    <ul id="breadcrumb" aria-labelledby="breadcrumbLabel">
       <li><a href="/">Home</a></li>
     </ul>
+    <label id="breadcrumbLabel">Breadcrumb</label>
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
@@ -28,19 +29,40 @@
 
   <!-- Beginning main -->
   <main id="maincontent">
+  <section id="restaurant-container" aria-labelledby="restaurantLabel">
+    <h2 id="restaurant-name"></h2>
+    <img id="restaurant-img">
+    <p id="restaurant-cuisine"></p>
+  </section>
+  <label id="restaurantLabel">Restaurant Information</label>
+
+  <div class="mapDetails-container">
+    <div id="details">
+      <p id="restaurant-address"></p>
+      <table id="restaurant-hours"></table>
+    </div>
+     <div id="map-container" aria-labelledby="mapLabel">
+      <div id="map"></div>
+    </div>
+  </div>
+
     <!-- Beginning map -->
-    <section id="map-container">
+
+    <!-- <section id="map-container" aria-labelledby="mapLabel">
       <div id="map"></div>
     </section>
+    <label id="mapLabel">Mapbox Map with restaurants locations</label> -->
     <!-- End map -->
     <!-- Beginning restaurant -->
-    <section id="restaurant-container">
+    <!-- <section id="restaurant-container" aria-labelledby="restaurantLabel">
       <h1 id="restaurant-name"></h1>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
     </section>
+    <label id="restaurantLabel">Restaurant Information</label> -->
+
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
@@ -61,6 +83,7 @@
   <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/register.js"></script>
   <!-- Google Maps -->
  <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script> -->
   <!-- End scripts -->
