@@ -36,13 +36,12 @@ function () {
     // }
     value: function fetchRestaurants(callback) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', DBHelper.DATABASE_URL);
+      xhr.open('GET', "".concat(DBHelper.API_URL, "/restaurants"));
 
       xhr.onload = function () {
         if (xhr.status === 200) {
           // Got a success response from server!
-          var json = JSON.parse(xhr.responseText);
-          var restaurants = json.restaurants;
+          var restaurants = JSON.parse(xhr.responseText);
           callback(null, restaurants);
         } else {
           // Oops!. Got an error from server.
@@ -60,23 +59,15 @@ function () {
   }, {
     key: "fetchRestaurantById",
     value: function fetchRestaurantById(id, callback) {
-      // fetch all restaurants with proper error handling.
-      DBHelper.fetchRestaurants(function (error, restaurants) {
-        if (error) {
-          callback(error, null);
-        } else {
-          var restaurant = restaurants.find(function (r) {
-            return r.id == id;
-          });
-
-          if (restaurant) {
-            // Got the restaurant
-            callback(null, restaurant);
-          } else {
-            // Restaurant does not exist in the database
-            callback('Restaurant does not exist', null);
-          }
-        }
+      fetch("".concat(DBHelper.API_URL, "/restaurants/").concat(id)).then(function (response) {
+        if (!response.ok) return Promise.reject("Restaurant couldn't be fetched from network");
+        return response.json();
+      }).then(function (fetchedRestaurant) {
+        // if restaurant could be fetched from network:
+        return callback(null, fetchedRestaurant);
+      }).catch(function (networkError) {
+        // if restaurant couldn't be fetched from network:
+        return callback(networkError, null);
       });
     }
     /**
@@ -241,16 +232,16 @@ function () {
       map.innerHTML = "<div class=\"warning-icon\">!</div>\n    <div class=\"warning-message\">We're having problems loading Maps</div>\n    <div class=\"warning-suggestion\">Are you offline? If you need to see a map, please check back later.</div>";
     }
   }, {
-    key: "DATABASE_URL",
+    key: "API_URL",
 
     /**
      * Database URL.
      * Change this to restaurants.json file location on your server.
      */
     get: function get() {
-      var port = 1337; // Change this to your server port
+      var port = 1337; // port where sails server will listen.
 
-      return "http://localhost:".concat(port, "/restaurants");
+      return "http://localhost:".concat(port);
     }
   }]);
 

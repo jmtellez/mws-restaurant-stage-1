@@ -7,12 +7,10 @@ export default class DBHelper {
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
-  static get DATABASE_URL() {
-     const port = 1337 // Change this to your server port
-     return `http://localhost:${port}/restaurants`;
-  
+  static get API_URL() {
+    const port = 1337; // port where sails server will listen.
+    return `http://localhost:${port}`;
   }
-
   /**
    * Fetch all restaurants.
    */
@@ -24,11 +22,10 @@ export default class DBHelper {
   // }
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
+    xhr.open('GET', `${DBHelper.API_URL}/restaurants`);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
+        const restaurants = JSON.parse(xhr.responseText);
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
@@ -41,21 +38,17 @@ export default class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
-      }
+    fetch(`${DBHelper.API_URL}/restaurants/${id}`).then(response => {
+      if (!response.ok) return Promise.reject("Restaurant couldn't be fetched from network");
+      return response.json();
+    }).then(fetchedRestaurant => {
+      // if restaurant could be fetched from network:
+      return callback(null, fetchedRestaurant);
+    }).catch(networkError => {
+      // if restaurant couldn't be fetched from network:
+      return callback(networkError, null);
     });
   }
- 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
