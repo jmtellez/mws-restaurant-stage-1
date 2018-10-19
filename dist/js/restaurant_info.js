@@ -199,7 +199,7 @@ function () {
   }, {
     key: "imageUrlForRestaurant",
     value: function imageUrlForRestaurant(restaurant) {
-      return "/img/".concat(restaurant.photograph, ".jpg");
+      return "/img/".concat(restaurant.id, ".jpg");
     }
     /**
      * Map marker for a restaurant.
