@@ -1,59 +1,31 @@
 /**
  * Common database helper functions.
  */
-class DBHelper {
+export default class DBHelper {
 
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+     const port = 1337 // Change this to your server port
+     return `http://localhost:${port}/restaurants`;
+  
   }
 
   /**
    * Fetch all restaurants.
    */
-  // static fetchRestaurants(callback) {
-  //   let xhr = new XMLHttpRequest();
-  //   xhr.open('GET', DBHelper.DATABASE_URL);
-  //   xhr.onload = () => {
-  //     if (xhr.status === 200) { // Got a success response from server!
-  //       const json = JSON.parse(xhr.responseText);
-  //       const restaurants = json.restaurants;
-  //       callback(null, restaurants);
-  //     } else { // Oops!. Got an error from server.
-  //       const error = (`Request failed. Returned status of ${xhr.status}`);
-  //       callback(error, null);
-  //     }
-  //   };
-  //   xhr.send();
-  // }
   static fetchRestaurants(callback) {
     fetch(DBHelper.DATABASE_URL)
       .then(response => response.json()
       .then(restaurants => callback(null,restaurants)
     )).catch(err => callback(err, null))
   }
+
   /**
    * Fetch a restaurant by its ID.
    */
-  // static fetchRestaurantById(id, callback) {
-  //   // fetch all restaurants with proper error handling.
-  //   DBHelper.fetchRestaurants((error, restaurants) => {
-  //     if (error) {
-  //       callback(error, null);
-  //     } else {
-  //       const restaurant = restaurants.find(r => r.id == id);
-  //       if (restaurant) { // Got the restaurant
-  //         callback(null, restaurant);
-  //       } else { // Restaurant does not exist in the database
-  //         callback('Restaurant does not exist', null);
-  //       }
-  //     }
-  //   });
-  // }
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
     DBHelper.fetchRestaurants((error, restaurants) => {
@@ -69,6 +41,7 @@ class DBHelper {
       }
     });
   }
+ 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
@@ -169,7 +142,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}.jpg`);
+    return (`/img/${restaurant.id}.jpg`);
   }
 
   /**
@@ -186,6 +159,13 @@ class DBHelper {
     return marker;
   } 
 
+  static mapOffline() {
+    const map = document.getElementById('map');
+    map.className = "map-offline";
+    map.innerHTML = `<div class="warning-icon">!</div>
+    <div class="warning-message">We're having problems loading Maps</div>
+    <div class="warning-suggestion">Are you offline? If you need to see a map, please check back later.</div>`;
+  }
 
 }
 
