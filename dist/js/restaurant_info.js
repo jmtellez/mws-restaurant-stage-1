@@ -28,14 +28,30 @@ function () {
     /**
      * Fetch all restaurants.
      */
+    // static fetchRestaurants(callback) {
+    //   fetch(DBHelper.DATABASE_URL)
+    //     .then(response => response.json()
+    //     .then(restaurants => callback(null,restaurants)
+    //   )).catch(err => callback(err, null))
+    // }
     value: function fetchRestaurants(callback) {
-      fetch(DBHelper.DATABASE_URL).then(function (response) {
-        return response.json().then(function (restaurants) {
-          return callback(null, restaurants);
-        });
-      }).catch(function (err) {
-        return callback(err, null);
-      });
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', DBHelper.DATABASE_URL);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          // Got a success response from server!
+          var json = JSON.parse(xhr.responseText);
+          var restaurants = json.restaurants;
+          callback(null, restaurants);
+        } else {
+          // Oops!. Got an error from server.
+          var error = "Request failed. Returned status of ".concat(xhr.status);
+          callback(error, null);
+        }
+      };
+
+      xhr.send();
     }
     /**
      * Fetch a restaurant by its ID.
