@@ -28,33 +28,18 @@ function () {
     /**
      * Fetch all restaurants.
      */
-    // static fetchRestaurants(callback) {
-    //   fetch(DBHelper.DATABASE_URL)
-    //     .then(response => response.json()
-    //     .then(restaurants => callback(null,restaurants)
-    //   )).catch(err => callback(err, null))
-    // }
     value: function fetchRestaurants(callback) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', "".concat(DBHelper.API_URL, "/restaurants"));
-
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          // Got a success response from server!
-          var restaurants = JSON.parse(xhr.responseText);
-          callback(null, restaurants);
-        } else {
-          // Oops!. Got an error from server.
-          var error = "Request failed. Returned status of ".concat(xhr.status);
-          callback(error, null);
-        }
-      };
-
-      xhr.send();
+      fetch("".concat(DBHelper.API_URL, "/restaurants")).then(function (response) {
+        return response.json().then(function (restaurants) {
+          return callback(null, restaurants);
+        });
+      }).catch(function (err) {
+        return callback(err, null);
+      });
     }
     /**
-     * Fetch a restaurant by its ID.
-     */
+    * Fetch a restaurant by its ID.
+    */
 
   }, {
     key: "fetchRestaurantById",
@@ -206,7 +191,8 @@ function () {
   }, {
     key: "imageUrlForRestaurant",
     value: function imageUrlForRestaurant(restaurant) {
-      return "/img/".concat(restaurant.id, ".jpg");
+      var url = "/img/".concat(restaurant.photograph || restaurant.id, ".jpg");
+      return url;
     }
     /**
      * Map marker for a restaurant.
@@ -221,7 +207,7 @@ function () {
         alt: restaurant.name,
         url: DBHelper.urlForRestaurant(restaurant)
       });
-      marker.addTo(newMap);
+      marker.addTo(map);
       return marker;
     }
   }, {
@@ -254,6 +240,8 @@ exports.default = DBHelper;
 "use strict";
 
 var _dbhelper = _interopRequireDefault(require("./dbhelper"));
+
+require("./register");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -337,7 +325,7 @@ var fillCuisinesHTML = function fillCuisinesHTML() {
 
 
 var initMap = function initMap() {
-  self.newMap = L.map('map', {
+  newMap = L.map('map', {
     center: [40.722216, -73.987501],
     zoom: 12,
     scrollWheelZoom: false
@@ -464,7 +452,7 @@ var addMarkersToMap = function addMarkersToMap() {
   var restaurants = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurants;
   restaurants.forEach(function (restaurant) {
     // Add marker to the map
-    var marker = _dbhelper.default.mapMarkerForRestaurant(restaurant, self.newMap);
+    var marker = _dbhelper.default.mapMarkerForRestaurant(restaurant, newMap);
 
     marker.on("click", onClick);
 
@@ -475,17 +463,18 @@ var addMarkersToMap = function addMarkersToMap() {
     self.markers.push(marker);
   });
 };
-/* addMarkersToMap = (restaurants = self.restaurants) => {
-  restaurants.forEach(restaurant => {
-    // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url
-    });
-    self.markers.push(marker);
-  });
-} */
 
-},{"./dbhelper":1}]},{},[2])
+},{"./dbhelper":1,"./register":3}],3:[function(require,module,exports){
+"use strict";
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(function (reg) {
+    console.log("it works!" + reg.scope);
+  }).catch(function (err) {
+    console.log("it failed :( " + err);
+  });
+}
+
+},{}]},{},[2])
 
 //# sourceMappingURL=main.js.map

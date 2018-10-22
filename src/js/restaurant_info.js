@@ -1,5 +1,5 @@
 import DBHelper from './dbhelper'
-
+import './register';
 let restaurant;
 var newMap;
 
@@ -18,7 +18,7 @@ const initMap = () => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      self.newMap = L.map('map', {
+      newMap = L.map('map', {
         center: [restaurant.latlng.lat, restaurant.latlng.lng],
         zoom: 16,
         scrollWheelZoom: false
@@ -32,7 +32,7 @@ const initMap = () => {
         id: 'mapbox.streets'
       }).addTo(newMap);
       fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+      DBHelper.mapMarkerForRestaurant(self.restaurant, newMap);
     }
   });
 }

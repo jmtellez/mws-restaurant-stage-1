@@ -2,7 +2,7 @@
 "use strict";
 
 var cacheID = "mws-001";
-var cachedItems = ["/", "/css/styles.css", "/img", "/js", "/js/main.js", "/js/dbhelper.js", "/js/restaurant_info.js"];
+var cachedItems = ["/", "/css/styles.css", "/img", "/js", "/js/main.js", "/js/restaurant_info.js"];
 self.addEventListener("install", function (event) {
   event.waitUntil(caches.open(cacheID).then(function (cache) {
     return cache.addAll(cachedItems);

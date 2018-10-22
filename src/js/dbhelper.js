@@ -14,27 +14,13 @@ export default class DBHelper {
   /**
    * Fetch all restaurants.
    */
-  // static fetchRestaurants(callback) {
-  //   fetch(DBHelper.DATABASE_URL)
-  //     .then(response => response.json()
-  //     .then(restaurants => callback(null,restaurants)
-  //   )).catch(err => callback(err, null))
-  // }
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${DBHelper.API_URL}/restaurants`);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const restaurants = JSON.parse(xhr.responseText);
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    fetch(`${DBHelper.API_URL}/restaurants`)
+      .then(response => response.json()
+      .then(restaurants => callback(null,restaurants)
+    )).catch(err => callback(err, null))
   }
-  /**
+    /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
@@ -149,7 +135,8 @@ export default class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.id}.jpg`);
+    let url = `/img/${(restaurant.photograph||restaurant.id)}.jpg`;
+    return url;
   }
 
   /**
@@ -162,7 +149,7 @@ export default class DBHelper {
       alt: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant)
       })
-      marker.addTo(newMap);
+      marker.addTo(map);
     return marker;
   } 
 

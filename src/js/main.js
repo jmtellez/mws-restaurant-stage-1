@@ -1,5 +1,5 @@
 import DBHelper from './dbhelper'
-
+import './register';
 let restaurants,
   neighborhoods,
   cuisines
@@ -74,7 +74,7 @@ const fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize leaflet map, called from HTML.
  */
 const initMap = () => {
-  self.newMap = L.map('map', {
+  newMap = L.map('map', {
     center: [40.722216, -73.987501],
     zoom: 12,
     scrollWheelZoom: false
@@ -200,7 +200,7 @@ const createRestaurantHTML = (restaurant) => {
 const addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.newMap);
+    const marker = DBHelper.mapMarkerForRestaurant(restaurant, newMap);
     marker.on("click", onClick);
     function onClick() {
       window.location.href = marker.options.url;
@@ -209,13 +209,3 @@ const addMarkersToMap = (restaurants = self.restaurants) => {
   });
 
 }
-/* addMarkersToMap = (restaurants = self.restaurants) => {
-  restaurants.forEach(restaurant => {
-    // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url
-    });
-    self.markers.push(marker);
-  });
-} */

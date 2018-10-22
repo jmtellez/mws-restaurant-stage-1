@@ -28,33 +28,18 @@ function () {
     /**
      * Fetch all restaurants.
      */
-    // static fetchRestaurants(callback) {
-    //   fetch(DBHelper.DATABASE_URL)
-    //     .then(response => response.json()
-    //     .then(restaurants => callback(null,restaurants)
-    //   )).catch(err => callback(err, null))
-    // }
     value: function fetchRestaurants(callback) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', "".concat(DBHelper.API_URL, "/restaurants"));
-
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          // Got a success response from server!
-          var restaurants = JSON.parse(xhr.responseText);
-          callback(null, restaurants);
-        } else {
-          // Oops!. Got an error from server.
-          var error = "Request failed. Returned status of ".concat(xhr.status);
-          callback(error, null);
-        }
-      };
-
-      xhr.send();
+      fetch("".concat(DBHelper.API_URL, "/restaurants")).then(function (response) {
+        return response.json().then(function (restaurants) {
+          return callback(null, restaurants);
+        });
+      }).catch(function (err) {
+        return callback(err, null);
+      });
     }
     /**
-     * Fetch a restaurant by its ID.
-     */
+    * Fetch a restaurant by its ID.
+    */
 
   }, {
     key: "fetchRestaurantById",
@@ -206,7 +191,8 @@ function () {
   }, {
     key: "imageUrlForRestaurant",
     value: function imageUrlForRestaurant(restaurant) {
-      return "/img/".concat(restaurant.id, ".jpg");
+      var url = "/img/".concat(restaurant.photograph || restaurant.id, ".jpg");
+      return url;
     }
     /**
      * Map marker for a restaurant.
@@ -221,7 +207,7 @@ function () {
         alt: restaurant.name,
         url: DBHelper.urlForRestaurant(restaurant)
       });
-      marker.addTo(newMap);
+      marker.addTo(map);
       return marker;
     }
   }, {
@@ -253,7 +239,20 @@ exports.default = DBHelper;
 },{}],2:[function(require,module,exports){
 "use strict";
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(function (reg) {
+    console.log("it works!" + reg.scope);
+  }).catch(function (err) {
+    console.log("it failed :( " + err);
+  });
+}
+
+},{}],3:[function(require,module,exports){
+"use strict";
+
 var _dbhelper = _interopRequireDefault(require("./dbhelper"));
+
+require("./register");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -276,7 +275,7 @@ var initMap = function initMap() {
       // Got an error!
       console.error(error);
     } else {
-      self.newMap = L.map('map', {
+      newMap = L.map('map', {
         center: [restaurant.latlng.lat, restaurant.latlng.lng],
         zoom: 16,
         scrollWheelZoom: false
@@ -289,7 +288,7 @@ var initMap = function initMap() {
       }).addTo(newMap);
       fillBreadcrumb();
 
-      _dbhelper.default.mapMarkerForRestaurant(self.restaurant, self.newMap);
+      _dbhelper.default.mapMarkerForRestaurant(self.restaurant, newMap);
     }
   });
 };
@@ -459,6 +458,6 @@ var getParameterByName = function getParameterByName(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
-},{"./dbhelper":1}]},{},[2])
+},{"./dbhelper":1,"./register":2}]},{},[3])
 
 //# sourceMappingURL=restaurant_info.js.map

@@ -5,7 +5,6 @@ var cachedItems = [
       "/img",
       "/js",
       "/js/main.js",
-      "/js/dbhelper.js",
       "/js/restaurant_info.js"];
 
 self.addEventListener("install", event=>{
